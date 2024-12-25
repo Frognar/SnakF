@@ -58,3 +58,13 @@ let ``can end in starting position when turn left 4 times`` () =
         endingPosition = startingPosition
 
     Check.QuickThrowOnFailure canGoBack
+
+[<Fact>]
+let ``move should always change only one coordinate`` () =
+    let changeOnlyOne (startingPosition: position) (direction: direction) =
+        let nextPosition = move startingPosition direction direction
+        let x1, y1 = startingPosition
+        let x2, y2 = nextPosition
+        (x1 = x2 && y1 <> y2) || (y1 = y2 && x1 <> x2)
+
+    Check.QuickThrowOnFailure changeOnlyOne
