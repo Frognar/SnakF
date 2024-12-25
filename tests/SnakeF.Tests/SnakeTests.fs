@@ -68,3 +68,14 @@ let ``move should always change only one coordinate`` () =
         (x1 = x2 && y1 <> y2) || (y1 = y2 && x1 <> x2)
 
     Check.QuickThrowOnFailure changeOnlyOne
+
+[<Fact>]
+let ``move should change position by distance of 1`` () =
+    let distanceOne (startingPosition: position) (direction: direction) =
+        let nextPosition = move startingPosition direction direction
+        let x1, y1 = startingPosition
+        let x2, y2 = nextPosition
+        let distance = abs (x1 - x2) + abs (y1 - y2)
+        distance = 1
+
+    Check.QuickThrowOnFailure distanceOne
