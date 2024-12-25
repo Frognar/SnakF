@@ -2,9 +2,10 @@
 
 open SnakF.Snake
 open Xunit
+open FsCheck
 
 [<Fact>]
 let ``after move should be in different position`` () =
-    let startingPosition: position = (0, 0)
-    let actualPosition = move startingPosition North
-    Assert.NotEqual(startingPosition, actualPosition)
+    let rec moveToDifferentPosition (startingPosition: position) (direction: direction) =
+        move startingPosition direction <> startingPosition
+    Check.QuickThrowOnFailure moveToDifferentPosition
