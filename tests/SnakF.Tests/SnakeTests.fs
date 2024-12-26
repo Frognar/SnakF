@@ -91,4 +91,15 @@ let ``180 turns are invalid`` () =
         isValidTurn direction newDirection = false
 
     Check.QuickThrowOnFailure invalidTurn
-        
+
+[<Fact>]
+let ``90 turns are valid`` () =
+    let validTurn (direction: direction) (left: bool) =
+        let newDirection = match direction with
+                            | North -> if left then West else East
+                            | South -> if left then East else West
+                            | East -> if left then North else South
+                            | West -> if left then South else North
+        isValidTurn direction newDirection
+
+    Check.QuickThrowOnFailure validTurn

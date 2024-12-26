@@ -13,7 +13,7 @@ let is180Turn (previousDirection: direction) (direction: direction) =
     | _ -> false
 
 let isValidTurn (previousDirection: direction) (direction: direction) =
-    false
+    not (is180Turn previousDirection direction)
 
 let move (startingPosition: position) (previousDirection: direction) (direction: direction) : position =
     let x, y = startingPosition
