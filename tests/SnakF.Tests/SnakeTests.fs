@@ -51,9 +51,8 @@ let ``can end in starting position when turn left 4 times`` () =
 let ``move should always change only one coordinate`` () =
     let changeOnlyOne (startingPosition: position) (direction: direction) =
         let nextPosition = move startingPosition direction
-        let x1, y1 = startingPosition
-        let x2, y2 = nextPosition
-        (x1 = x2 && y1 <> y2) || (y1 = y2 && x1 <> x2)
+        (startingPosition.x = nextPosition.x && startingPosition.y <> nextPosition.y)
+        || (startingPosition.y = nextPosition.y && startingPosition.x <> nextPosition.x)
 
     Check.QuickThrowOnFailure changeOnlyOne
 
@@ -61,9 +60,8 @@ let ``move should always change only one coordinate`` () =
 let ``move should change position by distance of 1`` () =
     let distanceOne (startingPosition: position) (direction: direction) =
         let nextPosition = move startingPosition direction
-        let x1, y1 = startingPosition
-        let x2, y2 = nextPosition
-        let distance = abs (x1 - x2) + abs (y1 - y2)
+        let distance = abs (startingPosition.x - nextPosition.x)
+                       + abs (startingPosition.y - nextPosition.y)
         distance = 1
 
     Check.QuickThrowOnFailure distanceOne
