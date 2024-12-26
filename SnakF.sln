@@ -6,7 +6,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8056ADAA-372
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{824DF286-30F9-47E9-9C52-F8B0C2CD8EFF}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "SnakeF.Tests", "tests\SnakeF.Tests\SnakeF.Tests.fsproj", "{C414EAD3-1FCC-420A-A164-17948AD43376}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "SnakF.Tests", "tests\SnakF.Tests\SnakF.Tests.fsproj", "{C414EAD3-1FCC-420A-A164-17948AD43376}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
