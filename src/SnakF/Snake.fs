@@ -15,13 +15,9 @@ let is180Turn (previousDirection: direction) (direction: direction) =
 let isValidTurn (previousDirection: direction) (direction: direction) =
     not (is180Turn previousDirection direction)
 
-let move (startingPosition: position) (previousDirection: direction) (direction: direction) : position =
+let move (startingPosition: position) (direction: direction) : position =
     let x, y = startingPosition
-    match
-        if is180Turn previousDirection direction
-        then previousDirection
-        else direction
-    with
+    match direction with
     | North -> x, y - 1
     | South -> x, y + 1
     | East -> x + 1, y
