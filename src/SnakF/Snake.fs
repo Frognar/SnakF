@@ -12,6 +12,9 @@ let is180Turn (previousDirection: direction) (direction: direction) =
     | West, East -> true
     | _ -> false
 
+let isValidTurn (previousDirection: direction) (direction: direction) =
+    false
+
 let move (startingPosition: position) (previousDirection: direction) (direction: direction) : position =
     let x, y = startingPosition
     match

@@ -79,3 +79,16 @@ let ``move should change position by distance of 1`` () =
         distance = 1
 
     Check.QuickThrowOnFailure distanceOne
+
+[<Fact>]
+let ``180 turns are invalid`` () =
+    let invalidTurn (direction: direction) =
+        let newDirection = match direction with
+                            | North -> South
+                            | South -> North
+                            | East -> West
+                            | West -> East
+        isValidTurn direction newDirection = false
+
+    Check.QuickThrowOnFailure invalidTurn
+        
