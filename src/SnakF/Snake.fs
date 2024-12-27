@@ -4,6 +4,8 @@ type direction = North | South | East | West
 
 type position = { x: int; y: int }
 
+type Snake = { head: position; tail: position list; direction: direction }
+
 let is180Turn (previousDirection: direction) (direction: direction) =
     match previousDirection, direction with
     | North, South
@@ -21,3 +23,6 @@ let move (startingPosition: position) (direction: direction) : position =
     | South -> { startingPosition with y = startingPosition.y + 1 }
     | East -> { startingPosition with x = startingPosition.x - 1 }
     | West -> { startingPosition with x = startingPosition.x + 1 }
+
+let createSnake (startingPosition: position) : Snake =
+    { head = startingPosition; tail = []; direction = North }

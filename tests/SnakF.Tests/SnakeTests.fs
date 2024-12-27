@@ -29,7 +29,7 @@ let turn180 (direction: direction) = direction |> turnLeft |> turnLeft
 
 [<Fact>]
 let ``after move should be in different position`` () =
-    let rec moveToDifferentPosition (startingPosition: position) (direction: direction) =
+    let moveToDifferentPosition (startingPosition: position) (direction: direction) =
         move startingPosition direction <> startingPosition
 
     Check.QuickThrowOnFailure moveToDifferentPosition
@@ -92,3 +92,11 @@ let ``90 turns are valid`` () =
         isValidTurn direction newDirection
 
     Check.QuickThrowOnFailure validTurn
+
+[<Fact>]
+let ``snake should start in given position`` () =
+    let snakeInStartingPosition (startingPosition: position) =
+        let snake = createSnake startingPosition
+        snake.head = startingPosition
+
+    Check.QuickThrowOnFailure snakeInStartingPosition
