@@ -100,3 +100,11 @@ let ``snake should start in given position`` () =
         snake.head = startingPosition
 
     Check.QuickThrowOnFailure snakeInStartingPosition
+
+[<Fact>]
+let ``snake should start with length 3`` () =
+    let snakeWithLength3 (startingPosition: position) =
+        let snake = createSnake startingPosition
+        snake.tail |> List.length = 2 // + head
+
+    Check.QuickThrowOnFailure snakeWithLength3  

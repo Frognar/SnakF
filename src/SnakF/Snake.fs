@@ -25,4 +25,4 @@ let move (startingPosition: position) (direction: direction) : position =
     | West -> { startingPosition with x = startingPosition.x + 1 }
 
 let createSnake (startingPosition: position) : Snake =
-    { head = startingPosition; tail = []; direction = North }
+    { head = startingPosition; tail = [1..2] |> List.map (fun _ -> startingPosition); direction = North }
