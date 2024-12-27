@@ -1,8 +1,7 @@
 ﻿module SnakeTests
 
+open FsCheck.Xunit
 open SnakF.Snake
-open Xunit
-open FsCheck
 
 let (-) (p1: position) (p2: position) = { x = p1.x - p2.x; y = p1.y - p2.y }
 let abs (p: position) = { x = abs p.x; y = abs p.y }
@@ -27,84 +26,57 @@ let turnRight (direction: direction) =
 
 let turn180 (direction: direction) = direction |> turnLeft |> turnLeft
 
-[<Fact>]
-let ``after move should be in different position`` () =
-    let moveToDifferentPosition (startingPosition: position) (direction: direction) =
-        move startingPosition direction <> startingPosition
+[<Property>]
+let ``after move should be in different position`` (startingPosition: position) (direction: direction) =
+    move startingPosition direction <> startingPosition
 
-    Check.QuickThrowOnFailure moveToDifferentPosition
+[<Property>]
+let ``can end in starting position when turn right 4 times`` (startingPosition: position) (initialDirection: direction) =
+    let rec loop i pos dir =
+        match i with
+        | 4 -> pos
+        | _ -> loop (i + 1) (move pos dir) (turnRight dir)
 
-[<Fact>]
-let ``can end in starting position when turn right 4 times`` () =
-    let canGoBack (startingPosition: position) (initialDirection: direction) =
-        let rec loop i pos dir =
-            match i with
-            | 4 -> pos
-            | _ -> loop (i + 1) (move pos dir) (turnRight dir)
+    let endingPosition = loop 0 startingPosition initialDirection
+    endingPosition = startingPosition
 
-        let endingPosition = loop 0 startingPosition initialDirection
-        endingPosition = startingPosition
+[<Property>]
+let ``can end in starting position when turn left 4 times`` (startingPosition: position) (initialDirection: direction) =
+    let rec loop i pos dir =
+        match i with
+        | 4 -> pos
+        | _ -> loop (i + 1) (move pos dir) (turnLeft dir)
 
-    Check.QuickThrowOnFailure canGoBack
+    let endingPosition = loop 0 startingPosition initialDirection
+    endingPosition = startingPosition
 
-[<Fact>]
-let ``can end in starting position when turn left 4 times`` () =
-    let canGoBack (startingPosition: position) (initialDirection: direction) =
-        let rec loop i pos dir =
-            match i with
-            | 4 -> pos
-            | _ -> loop (i + 1) (move pos dir) (turnLeft dir)
+[<Property>]
+let ``move should always change only one coordinate`` (startingPosition: position) (direction: direction) =
+    let nextPosition = move startingPosition direction
+    let diff = startingPosition - nextPosition |> abs
+    diff = { x = 1; y = 0 } || diff = { x = 0; y = 1 }
 
-        let endingPosition = loop 0 startingPosition initialDirection
-        endingPosition = startingPosition
+[<Property>]
+let ``move should change position by distance of 1`` (startingPosition: position) (direction: direction) =
+    let nextPosition = move startingPosition direction
+    startingPosition - nextPosition |> distanceFrom0 = 1
 
-    Check.QuickThrowOnFailure canGoBack
+[<Property>]
+let ``180 turns are invalid`` (direction: direction) =
+    let newDirection = turn180 direction
+    isValidTurn direction newDirection = false
 
-[<Fact>]
-let ``move should always change only one coordinate`` () =
-    let changeOnlyOne (startingPosition: position) (direction: direction) =
-        let nextPosition = move startingPosition direction
-        let diff = startingPosition - nextPosition |> abs
-        diff = { x = 1; y = 0 } || diff = { x = 0; y = 1 }
+[<Property>]
+let ``90 turns are valid`` (direction: direction) (left: bool) =
+    let newDirection = (if left then turnLeft else turnRight) direction
+    isValidTurn direction newDirection
 
-    Check.QuickThrowOnFailure changeOnlyOne
+[<Property>]
+let ``snake should start in given position`` (startingPosition: position) =
+    let snake = createSnake startingPosition
+    snake.head = startingPosition
 
-[<Fact>]
-let ``move should change position by distance of 1`` () =
-    let distanceOne (startingPosition: position) (direction: direction) =
-        let nextPosition = move startingPosition direction
-        startingPosition - nextPosition |> distanceFrom0 = 1
-
-    Check.QuickThrowOnFailure distanceOne
-
-[<Fact>]
-let ``180 turns are invalid`` () =
-    let invalidTurn (direction: direction) =
-        let newDirection = turn180 direction
-        isValidTurn direction newDirection = false
-
-    Check.QuickThrowOnFailure invalidTurn
-
-[<Fact>]
-let ``90 turns are valid`` () =
-    let validTurn (direction: direction) (left: bool) =
-        let newDirection = (if left then turnLeft else turnRight) direction
-        isValidTurn direction newDirection
-
-    Check.QuickThrowOnFailure validTurn
-
-[<Fact>]
-let ``snake should start in given position`` () =
-    let snakeInStartingPosition (startingPosition: position) =
-        let snake = createSnake startingPosition
-        snake.head = startingPosition
-
-    Check.QuickThrowOnFailure snakeInStartingPosition
-
-[<Fact>]
-let ``snake should start with length 3`` () =
-    let snakeWithLength3 (startingPosition: position) =
-        let snake = createSnake startingPosition
-        snake.tail |> List.length = 2 // + head
-
-    Check.QuickThrowOnFailure snakeWithLength3  
+[<Property>]
+let ``snake should start with length 3`` (startingPosition: position) =
+    let snake = createSnake startingPosition
+    snake.tail |> List.length = 2 // + head
