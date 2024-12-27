@@ -1,6 +1,7 @@
 ﻿namespace SnakeTests
 
 open FsCheck.Xunit
+open FsCheck
 open SnakF.Snake
 
 module private Helpers =
@@ -26,6 +27,17 @@ module private Helpers =
         | West -> North
 
     let turn180 (direction: direction) = direction |> turnLeft |> turnLeft
+
+type PositionGenerator =
+    static member Position() : Arbitrary<position> =
+        gen {
+            let! x = Gen.choose (-1000, 1000)
+            let! y = Gen.choose (-1000, 1000)
+            return { x = x; y = y }
+        }
+        |> Arb.fromGen
+
+[<Properties( Arbitrary = [| typeof<PositionGenerator> |] )>] do()
 
 module MoveTests =
     open Helpers
@@ -65,6 +77,7 @@ module MoveTests =
         let nextPosition = move startingPosition direction
         startingPosition - nextPosition |> distanceFrom0 = 1
 
+
 module TurnTests =
     open Helpers
         
@@ -79,12 +92,12 @@ module TurnTests =
         isValidTurn direction newDirection
 
 module SnakeTests =
-    [<Property>]
+    [<Property( Arbitrary = [| typeof<PositionGenerator> |] )>]
     let ``snake should start in given position`` (startingPosition: position) =
         let snake = createSnake startingPosition
         snake.head = startingPosition
 
-    [<Property>]
+    [<Property( Arbitrary = [| typeof<PositionGenerator> |] )>]
     let ``snake should start with length 3`` (startingPosition: position) =
         let snake = createSnake startingPosition
         snake.tail |> List.length = 2 // + head
