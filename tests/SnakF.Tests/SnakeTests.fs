@@ -28,7 +28,7 @@ module private Helpers =
 
     let turn180 (direction: direction) = direction |> turnLeft |> turnLeft
 
-type PositionGenerator =
+type CustomGenerator =
     static member Position() : Arbitrary<position> =
         gen {
             let! x = Gen.choose (-1000, 1000)
@@ -37,7 +37,14 @@ type PositionGenerator =
         }
         |> Arb.fromGen
 
-[<Properties( Arbitrary = [| typeof<PositionGenerator> |] )>] do()
+    static member Snake() : Arbitrary<Snake> =
+        gen {
+            let! position = CustomGenerator.Position () |> Arb.toGen
+            return createSnake position
+        }
+        |> Arb.fromGen
+
+[<Properties( Arbitrary = [| typeof<CustomGenerator> |] )>] do()
 
 module MoveTests =
     open Helpers
@@ -92,12 +99,17 @@ module TurnTests =
         isValidTurn direction newDirection
 
 module SnakeTests =
-    [<Property( Arbitrary = [| typeof<PositionGenerator> |] )>]
+    [<Property>]
     let ``snake should start in given position`` (startingPosition: position) =
         let snake = createSnake startingPosition
         snake.head = startingPosition
 
-    [<Property( Arbitrary = [| typeof<PositionGenerator> |] )>]
+    [<Property>]
     let ``snake should start with length 3`` (startingPosition: position) =
         let snake = createSnake startingPosition
         snake.tail |> List.length = 2 // + head
+
+    [<Property>]
+    let ``snake after move should have same length`` (snake: Snake) (direction: direction) =
+        let newSnake = moveSnake snake direction
+        newSnake.tail.Length = snake.tail.Length
