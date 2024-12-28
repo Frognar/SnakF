@@ -113,3 +113,8 @@ module SnakeTests =
     let ``snake after move should have same length`` (snake: Snake) (direction: direction) =
         let newSnake = moveSnake snake direction
         newSnake.tail.Length = snake.tail.Length
+
+    [<Property>]
+    let ``snake after move should be in different position`` (snake: Snake) (direction: direction) =
+        let newSnake = moveSnake snake direction
+        newSnake.head <> snake.head
