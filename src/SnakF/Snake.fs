@@ -29,5 +29,11 @@ let createSnake (startingPosition: position) : Snake =
 
 let moveSnake (snake: Snake) (direction: direction) : Snake =
     let newHead = move snake.head direction
+    let validDirection =
+        if isValidTurn snake.direction direction
+        then direction
+        else snake.direction
+
     { snake with
-        head = newHead }
+        head = newHead
+        direction = validDirection }
