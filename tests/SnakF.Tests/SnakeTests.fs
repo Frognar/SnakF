@@ -132,3 +132,8 @@ module SnakeTests =
         let direction = (if left then turnLeft else turnRight) snake.direction
         let newSnake = moveSnake snake direction
         newSnake.direction <> snake.direction && newSnake.direction = direction
+
+    [<Property>]
+    let ``snake tail should follow head`` (snake: Snake) (direction: direction) =
+        let newSnake = moveSnake snake direction
+        newSnake.tail.Head = snake.head
