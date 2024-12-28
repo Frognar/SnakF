@@ -39,12 +39,13 @@ type CustomGenerator =
 
     static member Snake() : Arbitrary<Snake> =
         gen {
-            let! position = CustomGenerator.Position () |> Arb.toGen
+            let! position = CustomGenerator.Position() |> Arb.toGen
             return createSnake position
         }
         |> Arb.fromGen
 
-[<Properties( Arbitrary = [| typeof<CustomGenerator> |] )>] do()
+[<Properties(Arbitrary = [| typeof<CustomGenerator> |])>]
+do ()
 
 module MoveTests =
     open Helpers
@@ -54,7 +55,10 @@ module MoveTests =
         move startingPosition direction <> startingPosition
 
     [<Property>]
-    let ``can end in starting position when turn right 4 times`` (startingPosition: position) (initialDirection: direction) =
+    let ``can end in starting position when turn right 4 times``
+        (startingPosition: position)
+        (initialDirection: direction)
+        =
         let rec loop i pos dir =
             match i with
             | 4 -> pos
@@ -64,7 +68,10 @@ module MoveTests =
         endingPosition = startingPosition
 
     [<Property>]
-    let ``can end in starting position when turn left 4 times`` (startingPosition: position) (initialDirection: direction) =
+    let ``can end in starting position when turn left 4 times``
+        (startingPosition: position)
+        (initialDirection: direction)
+        =
         let rec loop i pos dir =
             match i with
             | 4 -> pos
@@ -87,7 +94,7 @@ module MoveTests =
 
 module TurnTests =
     open Helpers
-        
+
     [<Property>]
     let ``180 turns are invalid`` (direction: direction) =
         let newDirection = turn180 direction
