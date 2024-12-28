@@ -99,6 +99,8 @@ module TurnTests =
         isValidTurn direction newDirection
 
 module SnakeTests =
+    open Helpers
+
     [<Property>]
     let ``snake should start in given position`` (startingPosition: position) =
         let snake = createSnake startingPosition
@@ -118,3 +120,9 @@ module SnakeTests =
     let ``snake after move should be in different position`` (snake: Snake) (direction: direction) =
         let newSnake = moveSnake snake direction
         newSnake.head <> snake.head
+
+    [<Property>]
+    let ``snake can't turn 180`` (snake: Snake) =
+        let direction = turn180 snake.direction
+        let newSnake = moveSnake snake direction
+        newSnake.direction = snake.direction
