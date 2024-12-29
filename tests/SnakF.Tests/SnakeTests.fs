@@ -144,3 +144,10 @@ module SnakeTests =
     let ``snake tail should follow head`` (snake: Snake) (direction: direction) =
         let newSnake = moveSnake snake direction
         newSnake.tail.Head = snake.head
+
+    [<Property>]
+    let ``snake segments should follow each other`` (snake: Snake) (direction: direction) =
+        let newSnake = moveSnake snake direction
+        newSnake.tail
+        |> List.windowed 2
+        |> List.forall (fun pair -> pair[0] - pair[1] |> distanceFrom0 = 1)
