@@ -40,7 +40,13 @@ type CustomGenerator =
     static member Snake() : Arbitrary<Snake> =
         gen {
             let! position = CustomGenerator.Position() |> Arb.toGen
-            return createSnake position
+            let! direction = Gen.elements [ North; South; East; West ]
+            let! size = Gen.choose (2, 15)
+
+            return
+                { head = position
+                  tail = [ 1..size ] |> List.map (fun i -> { position with y = position.y - i })
+                  direction = direction }
         }
         |> Arb.fromGen
 
@@ -148,6 +154,7 @@ module SnakeTests =
     [<Property>]
     let ``snake segments should follow each other`` (snake: Snake) (direction: direction) =
         let newSnake = moveSnake snake direction
+
         newSnake.tail
         |> List.windowed 2
         |> List.forall (fun pair -> pair[0] - pair[1] |> distanceFrom0 = 1)
