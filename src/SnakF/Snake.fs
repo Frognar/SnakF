@@ -13,6 +13,12 @@ type Snake =
       tail: position list
       direction: direction }
 
+type GameState =
+    { snake: Snake
+      score: int
+      pointPosition: position
+      gameSize: int * int }
+
 let is180Turn (previousDirection: direction) (direction: direction) =
     match previousDirection, direction with
     | North, South
@@ -62,3 +68,7 @@ let moveSnake (snake: Snake) (direction: direction) : Snake =
         head = newHead
         direction = validDirection
         tail = newTail }
+
+let gameTick (gameState: GameState) (direction: direction) : GameState =
+    let newSnake = moveSnake gameState.snake direction
+    { gameState with snake = newSnake }

@@ -158,3 +158,17 @@ module SnakeTests =
         newSnake.tail
         |> List.windowed 2
         |> List.forall (fun pair -> pair[0] - pair[1] |> distanceFrom0 = 1)
+
+module GameTests =
+    [<Property>]
+    let ``game tick should move snake`` (snake: Snake) (direction: direction) =
+        let game =
+            {
+                snake = snake
+                score = 0
+                pointPosition = { x = 4; y = 5 }
+                gameSize = (10, 10)
+            }
+
+        let newGame = gameTick game direction
+        newGame.snake <> game.snake
