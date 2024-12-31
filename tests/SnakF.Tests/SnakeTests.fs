@@ -173,12 +173,12 @@ module GameTests =
         let newGame = gameTick game direction
         newGame.snake <> game.snake
 
+    let getPointNextToSnake (snake: Snake) (direction: direction) : position =
+        (moveSnake snake direction).head
+
     [<Property>]
     let ``game tick should increase score if snake is in point`` (snake: Snake) (direction: direction) =
-        let is180 = is180Turn snake.direction direction
-        let finalDirection = if is180 then snake.direction else direction
-        let pointPosition = move snake.head finalDirection
-
+        let pointPosition = getPointNextToSnake snake direction
         let game =
             {
                 snake = snake
@@ -187,5 +187,5 @@ module GameTests =
                 gameSize = (10, 10)
             }
 
-        let newGame = gameTick game finalDirection
+        let newGame = gameTick game direction
         newGame.score = 1
