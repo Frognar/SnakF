@@ -189,3 +189,17 @@ module GameTests =
 
         let newGame = gameTick game direction
         newGame.score = 1
+
+    [<Property>]
+    let ``snake should increase in length if snake is in point`` (snake: Snake) (direction: direction) =
+        let pointPosition = getPointNextToSnake snake direction
+        let game =
+            {
+                snake = snake
+                score = 0
+                pointPosition = pointPosition
+                gameSize = (10, 10)
+            }
+
+        let newGame = gameTick game direction
+        List.length newGame.snake.tail > List.length snake.tail
