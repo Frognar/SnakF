@@ -163,12 +163,10 @@ module GameTests =
     [<Property>]
     let ``game tick should move snake`` (snake: Snake) (direction: direction) =
         let game =
-            {
-                snake = snake
-                score = 0
-                pointPosition = { x = 4; y = 5 }
-                gameSize = (10, 10)
-            }
+            { snake = snake
+              score = 0
+              pointPosition = { x = 4; y = 5 }
+              gameSize = (10, 10) }
 
         let newGame = gameTick game direction
         newGame.snake <> game.snake
@@ -179,13 +177,12 @@ module GameTests =
     [<Property>]
     let ``game tick should increase score if snake is in point`` (snake: Snake) (direction: direction) =
         let pointPosition = getPointNextToSnake snake direction
+
         let game =
-            {
-                snake = snake
-                score = 0
-                pointPosition = pointPosition
-                gameSize = (10, 10)
-            }
+            { snake = snake
+              score = 0
+              pointPosition = pointPosition
+              gameSize = (10, 10) }
 
         let newGame = gameTick game direction
         newGame.score = 1
@@ -193,13 +190,12 @@ module GameTests =
     [<Property>]
     let ``snake should increase in length if snake is in point`` (snake: Snake) (direction: direction) =
         let pointPosition = getPointNextToSnake snake direction
+
         let game =
-            {
-                snake = snake
-                score = 0
-                pointPosition = pointPosition
-                gameSize = (10, 10)
-            }
+            { snake = snake
+              score = 0
+              pointPosition = pointPosition
+              gameSize = (10, 10) }
 
         let newGame = gameTick game direction
         List.length newGame.snake.tail > List.length snake.tail
