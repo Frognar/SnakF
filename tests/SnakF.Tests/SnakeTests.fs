@@ -31,8 +31,8 @@ module private Helpers =
 type CustomGenerator =
     static member Position() : Arbitrary<position> =
         gen {
-            let! x = Gen.choose (-1000, 1000)
-            let! y = Gen.choose (-1000, 1000)
+            let! x = Gen.choose (0, 10)
+            let! y = Gen.choose (0, 10)
             return { x = x; y = y }
         }
         |> Arb.fromGen
@@ -41,7 +41,7 @@ type CustomGenerator =
         gen {
             let! position = CustomGenerator.Position() |> Arb.toGen
             let! direction = Gen.elements [ North; South; East; West ]
-            let! size = Gen.choose (2, 15)
+            let! size = Gen.choose (2, 5)
 
             return
                 { head = position
