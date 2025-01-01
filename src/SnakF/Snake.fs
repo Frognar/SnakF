@@ -69,7 +69,7 @@ let moveSnake (snake: Snake) (direction: direction) : Snake =
         direction = validDirection
         tail = newTail }
 
-let gameTick (gameState: GameState) (direction: direction) : GameState =
+let gameTick newPointGenerationStrategy (gameState: GameState) (direction: direction) : GameState =
     let newSnake = moveSnake gameState.snake direction
     let shouldScore = newSnake.head = gameState.pointPosition
     if shouldScore then

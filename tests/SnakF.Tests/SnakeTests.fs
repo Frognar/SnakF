@@ -160,6 +160,12 @@ module SnakeTests =
         |> List.forall (fun pair -> pair[0] - pair[1] |> distanceFrom0 = 1)
 
 module GameTests =
+    let pointGenerationStrategy (snakeHead: position) (size: int * int) : position =
+        { x = fst size - snakeHead.x; y = snd size - snakeHead.y }
+
+    let gameTick (gameState: GameState) (direction: direction) =
+        gameTick pointGenerationStrategy gameState direction
+    
     [<Property>]
     let ``game tick should move snake`` (snake: Snake) (direction: direction) =
         let game =
