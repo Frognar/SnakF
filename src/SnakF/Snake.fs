@@ -1,25 +1,25 @@
 module SnakF.Snake
 
-type direction =
+type Direction =
     | North
     | South
     | East
     | West
 
-type position = { x: int; y: int }
+type Position = { x: int; y: int }
 
 type Snake =
-    { head: position
-      tail: position list
-      direction: direction }
+    { head: Position
+      tail: Position list
+      direction: Direction }
 
 type GameState =
     { snake: Snake
       score: int
-      pointPosition: position
+      pointPosition: Position
       gameSize: int * int }
 
-let is180Turn (previousDirection: direction) (direction: direction) =
+let is180Turn (previousDirection: Direction) (direction: Direction) =
     match previousDirection, direction with
     | North, South
     | South, North
@@ -27,10 +27,10 @@ let is180Turn (previousDirection: direction) (direction: direction) =
     | West, East -> true
     | _ -> false
 
-let isValidTurn (previousDirection: direction) (direction: direction) =
+let isValidTurn (previousDirection: Direction) (direction: Direction) =
     not (is180Turn previousDirection direction)
 
-let move (startingPosition: position) (direction: direction) : position =
+let move (startingPosition: Position) (direction: Direction) : Position =
     match direction with
     | North ->
         { startingPosition with
@@ -45,7 +45,7 @@ let move (startingPosition: position) (direction: direction) : position =
         { startingPosition with
             x = startingPosition.x + 1 }
 
-let createSnake (startingPosition: position) : Snake =
+let createSnake (startingPosition: Position) : Snake =
     { head = startingPosition
       tail =
         [ 1..2 ]
@@ -54,7 +54,7 @@ let createSnake (startingPosition: position) : Snake =
                 y = startingPosition.y + i })
       direction = North }
 
-let moveSnake (snake: Snake) (direction: direction) : Snake =
+let moveSnake (snake: Snake) (direction: Direction) : Snake =
     let validDirection =
         if isValidTurn snake.direction direction then
             direction
@@ -72,11 +72,11 @@ let moveSnake (snake: Snake) (direction: direction) : Snake =
 let growSnake (snake: Snake) : Snake =
     { snake with tail = snake.tail @ [ snake.head ] }
 
-type PointGenerationStrategy = position -> int * int -> position
+type PointGenerationStrategy = Position -> int * int -> Position
 let gameTick
     (generateNewPoint: PointGenerationStrategy)
     (gameState: GameState)
-    (direction: direction)
+    (direction: Direction)
     : GameState =
 
     let newSnake = moveSnake gameState.snake direction
@@ -93,7 +93,7 @@ let gameTick
 let render (game: GameState) =
     let width, height = game.gameSize
 
-    let renderPoint (point: position) =
+    let renderPoint (point: Position) =
         if point = game.pointPosition then
             "#"
         elif point = game.snake.head then
