@@ -89,3 +89,23 @@ let gameTick
             pointPosition = generateNewPoint newSnake.head gameState.gameSize }
     else
         { gameState with snake = newSnake }
+
+let render (game: GameState) =
+    let width, height = game.gameSize
+
+    let renderPoint (point: position) =
+        if point = game.pointPosition then
+            "#"
+        elif point = game.snake.head then
+            "S"
+        elif game.snake.tail |> List.contains point then
+            "x"
+        else
+            "."
+
+    [ 0..height - 1 ]
+    |> List.map (fun y ->
+        [ 0..width - 1 ]
+        |> List.map (fun x -> renderPoint { x = x; y = y })
+        |> String.concat "")
+    |> String.concat "\n"
