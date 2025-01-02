@@ -161,7 +161,9 @@ module SnakeTests =
 
 module GameTests =
     let pointGenerationStrategy (snakeHead: position) (size: int * int) : position =
-        { x = fst size - snakeHead.x; y = snd size - snakeHead.y }
+        match snakeHead with
+        | { x = 5; y = 5 } -> { x = 4; y = 5 }
+        | _ -> { x = fst size - snakeHead.x; y = snd size - snakeHead.y }
 
     let gameTick (gameState: GameState) (direction: direction) =
         gameTick pointGenerationStrategy gameState direction
