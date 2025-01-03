@@ -224,3 +224,63 @@ module GameTests =
 
         let newGame = gameTick game direction
         newGame.pointPosition <> pointPosition
+
+    type SnakeNearWallGenerator =
+        static member Snake() : Arbitrary<Snake> =
+            Gen.oneof
+                [gen {
+                    let! size = Gen.choose (2, 5)
+                    let! x = Gen.choose (0, 10)
+                    let head = {x = x; y = 10}
+
+                    return {
+                        head = head
+                        tail = [ 1..size ] |> List.map (fun i -> { head with y = head.y - i })
+                        direction = South
+                    }
+                };
+                gen {
+                    let! size = Gen.choose (2, 5)
+                    let! x = Gen.choose (0, 10)
+                    let head = {x = x; y = 0}
+
+                    return {
+                        head = head
+                        tail = [ 1..size ] |> List.map (fun i -> { head with y = head.y + i })
+                        direction = North
+                    }
+                };
+                gen {
+                    let! size = Gen.choose (2, 5)
+                    let! y = Gen.choose (0, 10)
+                    let head = {x = 10; y = y}
+
+                    return {
+                        head = head
+                        tail = [ 1..size ] |> List.map (fun i -> { head with x = head.x - i })
+                        direction = West
+                    }
+                };
+                gen {
+                    let! size = Gen.choose (2, 5)
+                    let! y = Gen.choose (0, 10)
+                    let head = {x = 0; y = y}
+
+                    return {
+                        head = head
+                        tail = [ 1..size ] |> List.map (fun i -> { head with x = head.x + i })
+                        direction = East
+                    }
+                }] |> Arb.fromGen
+
+    [<Property(Arbitrary = [| typeof<SnakeNearWallGenerator> |])>]
+    let ``game should end if snake hit in border`` (snake: Snake) =
+        let game =
+            { snake = snake
+              score = 0
+              pointPosition = {x=5;y=5}
+              gameSize = (10, 10)
+              gameOver = false }
+
+        let newGame = gameTick game snake.direction
+        newGame.gameOver = true

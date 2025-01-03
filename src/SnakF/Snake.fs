@@ -73,6 +73,10 @@ let moveSnake (snake: Snake) (direction: Direction) : Snake =
 let growSnake (snake: Snake) : Snake =
     { snake with tail = snake.tail @ [ snake.head ] }
 
+let exceedsWall (snake: Snake) (size: int * int) : bool =
+    let width, height = size
+    snake.head.x < 0 || snake.head.x >= width || snake.head.y < 0 || snake.head.y >= height
+
 type PointGenerationStrategy = Position -> int * int -> Position
 let gameTick
     (generateNewPoint: PointGenerationStrategy)
@@ -82,14 +86,18 @@ let gameTick
 
     let newSnake = moveSnake gameState.snake direction
     let shouldScore = newSnake.head = gameState.pointPosition
+    let exceedsWall = exceedsWall newSnake gameState.gameSize
 
     if shouldScore then
         { gameState with
             snake = growSnake newSnake
             score = gameState.score + 1
-            pointPosition = generateNewPoint newSnake.head gameState.gameSize }
+            pointPosition = generateNewPoint newSnake.head gameState.gameSize
+            gameOver = exceedsWall }
     else
-        { gameState with snake = newSnake }
+        { gameState with
+            snake = newSnake
+            gameOver = exceedsWall }
 
 let render (game: GameState) =
     let width, height = game.gameSize
