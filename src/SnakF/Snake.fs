@@ -17,7 +17,8 @@ type GameState =
     { snake: Snake
       score: int
       pointPosition: Position
-      gameSize: int * int }
+      gameSize: int * int
+      gameOver: bool }
 
 let is180Turn (previousDirection: Direction) (direction: Direction) =
     match previousDirection, direction with
