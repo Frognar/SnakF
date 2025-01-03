@@ -3,8 +3,8 @@ module SnakF.Snake
 type Direction =
     | Up
     | Down
-    | Right
     | Left
+    | Right
 
 type Position = { x: int; y: int }
 
@@ -24,8 +24,8 @@ let is180Turn (previousDirection: Direction) (direction: Direction) =
     match previousDirection, direction with
     | Up, Down
     | Down, Up
-    | Right, Left
-    | Left, Right -> true
+    | Left, Right
+    | Right, Left -> true
     | _ -> false
 
 let isValidTurn (previousDirection: Direction) (direction: Direction) =
@@ -39,10 +39,10 @@ let move (startingPosition: Position) (direction: Direction) : Position =
     | Down ->
         { startingPosition with
             y = startingPosition.y + 1 }
-    | Right ->
+    | Left ->
         { startingPosition with
             x = startingPosition.x - 1 }
-    | Left ->
+    | Right ->
         { startingPosition with
             x = startingPosition.x + 1 }
 

@@ -16,15 +16,15 @@ module private Helpers =
         match direction with
         | Up -> Left
         | Down -> Right
-        | Right -> Up
         | Left -> Down
+        | Right -> Up
 
     let turnRight (direction: Direction) =
         match direction with
         | Up -> Right
         | Down -> Left
-        | Right -> Down
         | Left -> Up
+        | Right -> Down
 
     let turn180 (direction: Direction) = direction |> turnLeft |> turnLeft
 
@@ -40,7 +40,7 @@ type CustomGenerator =
     static member Snake() : Arbitrary<Snake> =
         gen {
             let! position = CustomGenerator.Position() |> Arb.toGen
-            let! direction = Gen.elements [ Up; Down; Right; Left ]
+            let! direction = Gen.elements [ Up; Down; Left; Right ]
             let! size = Gen.choose (2, 5)
 
             return
@@ -258,7 +258,7 @@ module GameTests =
                     return {
                         head = head
                         tail = [ 1..size ] |> List.map (fun i -> { head with x = head.x - i })
-                        direction = Left
+                        direction = Right
                     }
                 };
                 gen {
@@ -269,7 +269,7 @@ module GameTests =
                     return {
                         head = head
                         tail = [ 1..size ] |> List.map (fun i -> { head with x = head.x + i })
-                        direction = Right
+                        direction = Left
                     }
                 }] |> Arb.fromGen
 
