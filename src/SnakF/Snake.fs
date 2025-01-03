@@ -1,10 +1,10 @@
 module SnakF.Snake
 
 type Direction =
-    | North
-    | South
-    | East
-    | West
+    | Up
+    | Down
+    | Right
+    | Left
 
 type Position = { x: int; y: int }
 
@@ -22,10 +22,10 @@ type GameState =
 
 let is180Turn (previousDirection: Direction) (direction: Direction) =
     match previousDirection, direction with
-    | North, South
-    | South, North
-    | East, West
-    | West, East -> true
+    | Up, Down
+    | Down, Up
+    | Right, Left
+    | Left, Right -> true
     | _ -> false
 
 let isValidTurn (previousDirection: Direction) (direction: Direction) =
@@ -33,16 +33,16 @@ let isValidTurn (previousDirection: Direction) (direction: Direction) =
 
 let move (startingPosition: Position) (direction: Direction) : Position =
     match direction with
-    | North ->
+    | Up ->
         { startingPosition with
             y = startingPosition.y - 1 }
-    | South ->
+    | Down ->
         { startingPosition with
             y = startingPosition.y + 1 }
-    | East ->
+    | Right ->
         { startingPosition with
             x = startingPosition.x - 1 }
-    | West ->
+    | Left ->
         { startingPosition with
             x = startingPosition.x + 1 }
 
@@ -53,7 +53,7 @@ let createSnake (startingPosition: Position) : Snake =
         |> List.map (fun i ->
             { startingPosition with
                 y = startingPosition.y + i })
-      direction = North }
+      direction = Up }
 
 let moveSnake (snake: Snake) (direction: Direction) : Snake =
     let validDirection =

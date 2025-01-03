@@ -14,17 +14,17 @@ module private Helpers =
 
     let turnLeft (direction: Direction) =
         match direction with
-        | North -> West
-        | South -> East
-        | East -> North
-        | West -> South
+        | Up -> Left
+        | Down -> Right
+        | Right -> Up
+        | Left -> Down
 
     let turnRight (direction: Direction) =
         match direction with
-        | North -> East
-        | South -> West
-        | East -> South
-        | West -> North
+        | Up -> Right
+        | Down -> Left
+        | Right -> Down
+        | Left -> Up
 
     let turn180 (direction: Direction) = direction |> turnLeft |> turnLeft
 
@@ -40,7 +40,7 @@ type CustomGenerator =
     static member Snake() : Arbitrary<Snake> =
         gen {
             let! position = CustomGenerator.Position() |> Arb.toGen
-            let! direction = Gen.elements [ North; South; East; West ]
+            let! direction = Gen.elements [ Up; Down; Right; Left ]
             let! size = Gen.choose (2, 5)
 
             return
@@ -236,7 +236,7 @@ module GameTests =
                     return {
                         head = head
                         tail = [ 1..size ] |> List.map (fun i -> { head with y = head.y - i })
-                        direction = South
+                        direction = Down
                     }
                 };
                 gen {
@@ -247,7 +247,7 @@ module GameTests =
                     return {
                         head = head
                         tail = [ 1..size ] |> List.map (fun i -> { head with y = head.y + i })
-                        direction = North
+                        direction = Up
                     }
                 };
                 gen {
@@ -258,7 +258,7 @@ module GameTests =
                     return {
                         head = head
                         tail = [ 1..size ] |> List.map (fun i -> { head with x = head.x - i })
-                        direction = West
+                        direction = Left
                     }
                 };
                 gen {
@@ -269,7 +269,7 @@ module GameTests =
                     return {
                         head = head
                         tail = [ 1..size ] |> List.map (fun i -> { head with x = head.x + i })
-                        direction = East
+                        direction = Right
                     }
                 }] |> Arb.fromGen
 
@@ -278,7 +278,7 @@ module GameTests =
         let game =
             { snake = snake
               score = 0
-              pointPosition = {x=5;y=5}
+              pointPosition = { x = 5; y = 5 }
               gameSize = (10, 10)
               gameOver = false }
 
