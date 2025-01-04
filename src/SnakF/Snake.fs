@@ -77,6 +77,9 @@ let exceedsWall (snake: Snake) (size: int * int) : bool =
     let width, height = size
     snake.head.x < 0 || snake.head.x >= width || snake.head.y < 0 || snake.head.y >= height
 
+let hitItself (snake: Snake) : bool =
+    snake.tail |> List.contains snake.head
+
 type PointGenerationStrategy = Position -> int * int -> Position
 let gameTick
     (generateNewPoint: PointGenerationStrategy)
@@ -89,15 +92,18 @@ let gameTick
     let exceedsWall = exceedsWall newSnake gameState.gameSize
 
     if shouldScore then
+        let grownSnake = growSnake newSnake
+        let hitItself = hitItself grownSnake
         { gameState with
-            snake = growSnake newSnake
+            snake = grownSnake
             score = gameState.score + 1
             pointPosition = generateNewPoint newSnake.head gameState.gameSize
-            gameOver = exceedsWall }
+            gameOver = exceedsWall || hitItself }
     else
+        let hitItself = hitItself newSnake
         { gameState with
             snake = newSnake
-            gameOver = exceedsWall }
+            gameOver = exceedsWall || hitItself }
 
 let render (game: GameState) =
     let width, height = game.gameSize

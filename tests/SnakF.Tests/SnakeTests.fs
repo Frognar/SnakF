@@ -284,3 +284,85 @@ module GameTests =
 
         let newGame = gameTick game snake.direction
         newGame.gameOver = true
+
+    type SnakeNearTailGenerator =
+        static member Snake() : Arbitrary<Snake> =
+            Gen.oneof [
+                gen {
+                    let! x = Gen.choose (1, 9)
+                    let! y = Gen.choose (1, 9)
+                    let head = { x = x; y = y }
+                    
+                    return {
+                        head = head
+                        tail = [
+                            { head with x = head.x + 1 }
+                            { head with x = head.x + 1; y = head.y + 1 }
+                            { head with y = head.y + 1 }
+                            { head with y = head.y + 2 }
+                        ]
+                        direction = Down
+                    }
+                }
+                gen {
+                    let! x = Gen.choose (1, 9)
+                    let! y = Gen.choose (1, 9)
+                    let head = { x = x; y = y }
+                    
+                    return {
+                        head = head
+                        tail = [
+                            { head with x = head.x + 1 }
+                            { head with x = head.x + 1; y = head.y - 1 }
+                            { head with y = head.y - 1 }
+                            { head with y = head.y - 2 }
+                        ]
+                        direction = Up
+                    }
+                }
+                gen {
+                    let! x = Gen.choose (1, 9)
+                    let! y = Gen.choose (1, 9)
+                    let head = { x = x; y = y }
+                    
+                    return {
+                        head = head
+                        tail = [
+                            { head with x = head.x - 1 }
+                            { head with x = head.x - 1; y = head.y - 1 }
+                            { head with y = head.y - 1 }
+                            { head with y = head.y - 2 }
+                        ]
+                        direction =
+                            Up
+                    }
+                }
+                gen {
+                    let! x = Gen.choose (1, 9)
+                    let! y = Gen.choose (1, 9)
+                    let head = { x = x; y = y }
+                    
+                    return {
+                        head = head
+                        tail = [
+                            { head with x = head.x - 1 }
+                            { head with x = head.x - 1; y = head.y + 1 }
+                            { head with y = head.y + 1 }
+                            { head with y = head.y + 2 }
+                        ]
+                        direction =
+                            Down
+                    }
+                }] |> Arb.fromGen
+
+    [<Property(Arbitrary = [| typeof<SnakeNearTailGenerator> |])>]
+    let ``game should end if snake hit itself`` (snake: Snake) =
+        let game =
+            { snake = snake
+              score = 0
+              pointPosition = { x = 5; y = 5 }
+              gameSize = (10, 10)
+              gameOver = false }
+
+        let newGame = gameTick game snake.direction
+        newGame.gameOver = true
