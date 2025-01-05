@@ -115,9 +115,11 @@ let render (game: GameState) =
         else
             "."
 
-    [ 0..height - 1 ]
-    |> List.map (fun y ->
-        [ 0..width - 1 ]
-        |> List.map (fun x -> renderPoint { x = x; y = y })
-        |> String.concat "")
-    |> String.concat "\n"
+    let renderedMap =
+        [ 0..height - 1 ]
+            |> List.map (fun y ->
+            [ 0..width - 1 ]
+            |> List.map (fun x -> renderPoint { x = x; y = y })
+            |> String.concat "")
+        |> String.concat "\n"
+    renderedMap + $"\nScore {game.score}"
