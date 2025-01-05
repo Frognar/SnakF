@@ -70,9 +70,6 @@ let moveSnake (snake: Snake) (direction: Direction) : Snake =
         direction = validDirection
         tail = newTail }
 
-let growSnake (snake: Snake) : Snake =
-    { snake with tail = snake.tail @ [ snake.head ] }
-
 let exceedsWall (snake: Snake) (size: int * int) : bool =
     let width, height = size
     snake.head.x < 0 || snake.head.x >= width || snake.head.y < 0 || snake.head.y >= height
@@ -92,7 +89,7 @@ let gameTick
     let exceedsWall = exceedsWall newSnake gameState.gameSize
 
     if shouldScore then
-        let grownSnake = growSnake newSnake
+        let grownSnake = { newSnake with tail = newSnake.tail @ [gameState.snake.tail |> List.last]}
         let hitItself = hitItself grownSnake
         { gameState with
             snake = grownSnake
