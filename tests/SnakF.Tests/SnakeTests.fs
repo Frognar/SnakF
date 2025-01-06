@@ -138,7 +138,15 @@ module SnakeTests =
     let ``snake can't turn 180`` (snake: Snake) =
         let direction = turn180 snake.direction
         let newSnake = moveSnake snake direction
-        newSnake.direction = snake.direction
+        let headChange =
+            match snake.direction with
+            | Up -> (0, -1)
+            | Down -> (0, 1)
+            | Left -> (-1, 0)
+            | Right -> (1, 0)
+
+        let newHead = { snake.head with x = snake.head.x + fst headChange; y = snake.head.y + snd headChange }
+        newSnake.direction = snake.direction && newSnake.head = newHead
 
     [<Property>]
     let ``snake can turn 90`` (snake: Snake) (left: bool) =

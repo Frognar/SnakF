@@ -62,7 +62,7 @@ let moveSnake (snake: Snake) (direction: Direction) : Snake =
         else
             snake.direction
 
-    let newHead = move snake.head direction
+    let newHead = move snake.head validDirection
     let newTail = snake.head :: (snake.tail |> List.take (List.length snake.tail - 1))
 
     { snake with
