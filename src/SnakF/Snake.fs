@@ -54,13 +54,13 @@ let createSnake (startingPosition: Position) : Snake =
                 y = startingPosition.y + i })
       direction = Up }
 
-let moveSnake (snake: Snake) (direction: Direction) : Snake =
-    let validDirection =
-        if isValidTurn snake.direction direction then
-            direction
-        else
-            snake.direction
+let getValidDirection requestedDirection currentDirection =
+    match isValidTurn currentDirection requestedDirection with
+    | true -> requestedDirection
+    | false -> currentDirection
 
+let moveSnake (snake: Snake) (direction: Direction) : Snake =
+    let validDirection = getValidDirection direction snake.direction
     let newHead = move snake.head validDirection
     let newTail = snake.head :: (snake.tail |> List.take (List.length snake.tail - 1))
 
