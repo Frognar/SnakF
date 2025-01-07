@@ -31,20 +31,19 @@ let is180Turn (previousDirection: Direction) (direction: Direction) =
 let isValidTurn (previousDirection: Direction) (direction: Direction) =
     not (is180Turn previousDirection direction)
 
-let move (startingPosition: Position) (direction: Direction) : Position =
+let getPositionChange direction =
     match direction with
-    | Up ->
-        { startingPosition with
-            y = startingPosition.y - 1 }
-    | Down ->
-        { startingPosition with
-            y = startingPosition.y + 1 }
-    | Left ->
-        { startingPosition with
-            x = startingPosition.x - 1 }
-    | Right ->
-        { startingPosition with
-            x = startingPosition.x + 1 }
+    | Up -> { x = 0; y = -1 }
+    | Down -> { x = 0; y = 1 }
+    | Left -> { x = -1; y = 0 }
+    | Right -> { x = 1; y = 0 }
+
+let move (startingPosition: Position) (direction: Direction) : Position =
+    let positionChange = getPositionChange direction
+
+    { startingPosition with
+        x = startingPosition.x + positionChange.x
+        y = startingPosition.y + positionChange.y }
 
 let createSnake (startingPosition: Position) : Snake =
     { head = startingPosition
