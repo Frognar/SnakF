@@ -71,25 +71,29 @@ let moveSnake (snake: Snake) (direction: Direction) : Snake =
 
 let exceedsWall (snake: Snake) (size: int * int) : bool =
     let width, height = size
-    snake.head.x < 0 || snake.head.x >= width || snake.head.y < 0 || snake.head.y >= height
 
-let hitItself (snake: Snake) : bool =
-    snake.tail |> List.contains snake.head
+    snake.head.x < 0
+    || snake.head.x >= width
+    || snake.head.y < 0
+    || snake.head.y >= height
+
+let hitItself (snake: Snake) : bool = snake.tail |> List.contains snake.head
 
 type PointGenerationStrategy = Position -> int * int -> Position
-let gameTick
-    (generateNewPoint: PointGenerationStrategy)
-    (gameState: GameState)
-    (direction: Direction)
-    : GameState =
+
+let gameTick (generateNewPoint: PointGenerationStrategy) (gameState: GameState) (direction: Direction) : GameState =
 
     let newSnake = moveSnake gameState.snake direction
     let shouldScore = newSnake.head = gameState.pointPosition
     let exceedsWall = exceedsWall newSnake gameState.gameSize
 
     if shouldScore then
-        let grownSnake = { newSnake with tail = newSnake.tail @ [gameState.snake.tail |> List.last]}
+        let grownSnake =
+            { newSnake with
+                tail = newSnake.tail @ [ gameState.snake.tail |> List.last ] }
+
         let hitItself = hitItself grownSnake
+
         { gameState with
             snake = grownSnake
             score = gameState.score + 1
@@ -97,6 +101,7 @@ let gameTick
             gameOver = exceedsWall || hitItself }
     else
         let hitItself = hitItself newSnake
+
         { gameState with
             snake = newSnake
             gameOver = exceedsWall || hitItself }
@@ -105,20 +110,17 @@ let render (game: GameState) =
     let width, height = game.gameSize
 
     let renderPoint (point: Position) =
-        if point = game.pointPosition then
-            "#"
-        elif point = game.snake.head then
-            "S"
-        elif game.snake.tail |> List.contains point then
-            "x"
-        else
-            "."
+        if point = game.pointPosition then "#"
+        elif point = game.snake.head then "S"
+        elif game.snake.tail |> List.contains point then "x"
+        else "."
 
     let renderedMap =
-        [ 0..height - 1 ]
-            |> List.map (fun y ->
-            [ 0..width - 1 ]
+        [ 0 .. height - 1 ]
+        |> List.map (fun y ->
+            [ 0 .. width - 1 ]
             |> List.map (fun x -> renderPoint { x = x; y = y })
             |> String.concat "")
         |> String.concat "\n"
+
     renderedMap + $"\nScore {game.score}"
